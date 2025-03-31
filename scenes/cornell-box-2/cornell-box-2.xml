@@ -1,12 +1,12 @@
 <scene version="3.0.0">
-	<default name="spp" value="262144" />
-	<default name="resy" value="512" />
-	<default name="resx" value="512" />
-	<default name="max_depth" value="4" />
+	<default name="spp" value="1024" />
+	<default name="resy" value="256" />
+	<default name="resx" value="256" />
+	<default name="max_depth" value="2" />
 	<integrator type="dopplertofpath">
 		<integer name="max_depth" value="$max_depth" />
 		<float name="w_g" value="300" />
-		<float name="w_s" value="300.12775" />
+		<float name="hetero_frequency" value="1.0" />
 		<float name="hetero_offset" value="0.0" />
 		<float name="antithetic_shift" value="0.5" />
 		<integer name="path_correlation_depth" value="$max_depth" />
@@ -18,20 +18,17 @@
 			<matrix value="-1 0 0 0 0 1 0 1 0 0 -1 6.8 0 0 0 1" />
 		</transform>
 		<sampler type="correlated">
-			<integer name="sample_count" value="262144" />
+			<integer name="sample_count" value="1024" />
 		</sampler>
 		<film type="hdrfilm">
 			<integer name="width" value="$resx" />
 			<integer name="height" value="$resy" />
-			<integer name="crop_width" value="512" />
-			<integer name="crop_height" value="1" />
-			<integer name="crop_offset_y" value="511" />
 			<string name="file_format" value="openexr" />
 			<string name="pixel_format" value="rgb" />
 			<rfilter type="tent" />
 		</film>
 		<float name="shutter_open" value="0.0" />
-		<float name="shutter_close" value="0.002" />
+		<float name="shutter_close" value="0.0015" />
 	</sensor>
 	<bsdf type="twosided" id="LeftWallBSDF">
 		<bsdf type="diffuse">

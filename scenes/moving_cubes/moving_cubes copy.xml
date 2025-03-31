@@ -1,0 +1,115 @@
+<scene version="3.0.0">
+
+<!-- Defaults, these can be set via the command line: -Darg=value -->
+
+	<default name="spp" value="1024"/>
+	<default name="resx" value="320"/>
+	<default name="resy" value="240"/>
+
+<!-- Camera and Rendering Parameters -->
+
+	<integrator type="path">
+		<integer name="max_depth" value="2"/>
+	</integrator>
+	<sensor type="perspective">
+		<string name="fov_axis" value="x"/>61.927515
+		<float name="fov" value="2.805763"/>
+		<float name="near_clip" value="0.0001"/>
+		<float name="far_clip" value="500000.000000"/>
+		<transform name="to_world">
+			<!-- <scale value="2.5"/> -->
+			<translate value="0.000000 3.5 -100.0"/>
+		</transform>
+		<sampler type="correlated">
+			<integer name="sample_count" value="2048" />
+		</sampler>
+		<film type="hdrfilm" name="film">
+			<integer name="width" value="$resx"/>
+			<integer name="height" value="$resy"/>
+		</film>
+		<float name="shutter_open" value="0.0" />
+		<float name="shutter_close" value="0.0017" />
+	</sensor>
+
+<!-- Materials -->
+
+	<bsdf type="twosided" id="LeftWallBSDF">
+		<bsdf type="diffuse">
+			<rgb name="reflectance" value="0.63, 0.065, 0.05" />
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="RightWallBSDF">
+		<bsdf type="diffuse">
+			<rgb name="reflectance" value="0.14, 0.45, 0.091" />
+		</bsdf>
+	</bsdf>
+	<bsdf type="twosided" id="WhiteBSDF">
+		<bsdf type="diffuse">
+			<rgb name="reflectance" value="1.0, 1.0, 1.0" />
+		</bsdf>
+	</bsdf>
+
+<!-- Emitters -->
+	<!-- <emitter type="orthoprojectornoatten">
+		<transform name='to_world'>
+			<scale value="3" />
+			<lookat origin="0, 3.5, -100"
+                target="0, 3.5, 100"
+                up="0, 1, 0"/>
+		</transform>
+		<rgb name="irradiance" value="1.0" />
+	</emitter> -->
+	<emitter type="pointnoatten">
+		<point name="position" x="0.0" y="3.5" z="-100.0"/>
+		<rgb name="intensity" value="1.0" />
+	</emitter>
+
+<!-- Shapes -->
+
+	<shape type="ply" name="Floor">
+		<string name="filename" value="meshes/cbox_floor.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="WhiteBSDF"/>
+	</shape>
+	<shape type="ply" name="BackWall">
+		<string name="filename" value="meshes/cbox_back.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="WhiteBSDF"/>
+	</shape>
+	<shape type="ply" name="Ceiling">
+		<string name="filename" value="meshes/cbox_ceiling.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="WhiteBSDF"/>
+	</shape>
+
+	<shape type="ply" name="LeftCube">
+		<string name="filename" value="meshes/left_cube.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="WhiteBSDF"/>
+		<animation name="to_world">
+			<transform time="0">
+				<translate x="0" y="0" z="0"/>
+			</transform>
+			<transform time="0.125">
+				<translate x="0" y="0" z="-0.5"/>
+			</transform>
+		</animation>
+	</shape>
+
+	<shape type="ply" name="RightCube">
+		<string name="filename" value="meshes/right_cube.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="WhiteBSDF"/>
+				<animation name="to_world">
+			<transform time="0">
+				<translate x="0" y="0" z="0"/>
+			</transform>
+			<transform time="0.125">
+				<translate x="0" y="0" z="0.5"/>
+			</transform>
+		</animation>
+	</shape>
+
+<!-- Volumes -->
+
+</scene>

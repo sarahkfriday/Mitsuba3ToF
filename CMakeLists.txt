@@ -33,6 +33,8 @@ option(MI_ENABLE_EMBREE  "Use Embree for ray tracing operations?" ON)
 
 option(MI_SANITIZE_ADDRESS "Enable GCC/Clang address sanitizer?" OFF) # To catch out-of-bounds accesses
 option(MI_SANITIZE_MEMORY  "Enable GCC/Clang memory sanitizer?"  OFF) # To catch use of uninitialized memory
+option(MI_SANITIZE_UB  "Enable GCC/Clang UB sanitizer?"  ON) # To catch use of undefined behavior
+
 
 option(MI_THROW_TRAPS_DEBUGGER "Trap the debugger on calls to `Throw`?" OFF)
 if(MI_THROW_TRAPS_DEBUGGER)
@@ -242,7 +244,7 @@ endif()
 # ----------------------------------
 
 # Clang/GCC address sanitizer
-if ((MI_SANITIZE_ADDRESS OR MI_SANITIZE_MEMORY) AND
+if ((MI_SANITIZE_ADDRESS OR MI_SANITIZE_MEMORY OR MI_SANITIZE_UB) AND
     (CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)"))
   # Don't optimize too heavily
   if (U_CMAKE_BUILD_TYPE MATCHES REL)
@@ -267,6 +269,14 @@ if ((MI_SANITIZE_ADDRESS OR MI_SANITIZE_MEMORY) AND
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=memory")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fsanitize=memory")
     message(STATUS "Mitsuba: enabling the memory sanitizer.")
+  endif()
+
+  if (MI_SANITIZE_UB)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=undefined")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=undefined")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fsanitize=undefined")
+    message(STATUS "Mitsuba: enabling the undefined behavior sanitizer.")
   endif()
 endif()
 

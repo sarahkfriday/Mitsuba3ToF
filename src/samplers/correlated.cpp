@@ -18,8 +18,8 @@ public:
         m_time_correlate_number = props.get<int>("time_correlate_number", 2);
         m_path_correlate_number = props.get<int>("path_correlate_number", m_time_correlate_number);
 
-        std::cout << "time_correlate_number: " << m_time_correlate_number << std::endl;
-        std::cout << "path_correlate_number: " << m_path_correlate_number << std::endl;
+        // std::cout << "time_correlate_number: " << m_time_correlate_number << std::endl;
+        // std::cout << "path_correlate_number: " << m_path_correlate_number << std::endl;
     }
 
     ref<Sampler<Float, Spectrum>> fork() override {

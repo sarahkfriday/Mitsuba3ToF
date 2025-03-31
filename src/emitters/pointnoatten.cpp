@@ -57,12 +57,12 @@ uniformly radiates illumination into all directions.
  */
 
 template <typename Float, typename Spectrum>
-class PointLight final : public Emitter<Float, Spectrum> {
+class PointLightNoAtten final : public Emitter<Float, Spectrum> {
 public:
     MI_IMPORT_BASE(Emitter, m_flags, m_medium, m_needs_sample_3, m_to_world)
     MI_IMPORT_TYPES(Scene, Shape, Texture)
 
-    PointLight(const Properties &props) : Base(props) {
+    PointLightNoAtten(const Properties &props) : Base(props) {
         if (props.has_property("position")) {
             if (props.has_property("to_world"))
                 Throw("Only one of the parameters 'position' and 'to_world' "
@@ -132,11 +132,8 @@ public:
 
         Float dist2    = dr::squared_norm(ds.d),
               inv_dist = dr::rsqrt(dist2);
-        
-        // std::ostringstream oss;
-        // std::cout << "inv_dist = " << inv_dist << std::endl;
-        
-            // Redundant sqrt (removed by the JIT when the 'dist' field is not used)
+
+        // Redundant sqrt (removed by the JIT when the 'dist' field is not used)
         ds.dist = dr::sqrt(dist2);
         ds.d *= inv_dist;
 
@@ -144,7 +141,7 @@ public:
         si.wavelengths = it.wavelengths;
 
         UnpolarizedSpectrum spec =
-            m_intensity->eval(si, active) * dr::sqr(inv_dist);
+            m_intensity->eval(si, active);// * dr::sqr(inv_dist);
 
         return { ds, depolarizer<Spectrum>(spec) };
     }
@@ -160,8 +157,7 @@ public:
         SurfaceInteraction3f si = dr::zeros<SurfaceInteraction3f>();
         si.wavelengths = it.wavelengths;
 
-        UnpolarizedSpectrum spec = m_intensity->eval(si, active) *
-                                   dr::rcp(dr::squared_norm(ds.p - it.p));
+        UnpolarizedSpectrum spec = m_intensity->eval(si, active);// * dr::rcp(dr::squared_norm(ds.p - it.p));
 
         return depolarizer<Spectrum>(spec);
     }
@@ -196,7 +192,7 @@ public:
 
     std::string to_string() const override {
         std::ostringstream oss;
-        oss << "PointLight[" << std::endl
+        oss << "PointLightNoAtten[" << std::endl
             << "  position = " << string::indent(m_position) << "," << std::endl
             << "  intensity = " << m_intensity << "," << std::endl
             << "  medium = " << (m_medium ? string::indent(m_medium) : "none")
@@ -211,6 +207,6 @@ private:
 };
 
 
-MI_IMPLEMENT_CLASS_VARIANT(PointLight, Emitter)
-MI_EXPORT_PLUGIN(PointLight, "Point emitter")
+MI_IMPLEMENT_CLASS_VARIANT(PointLightNoAtten, Emitter)
+MI_EXPORT_PLUGIN(PointLightNoAtten, "Point emitter no atten")
 NAMESPACE_END(mitsuba)

@@ -1,0 +1,93 @@
+<scene version="2.1.0">
+
+<!-- Defaults, these can be set via the command line: -Darg=value -->
+
+	<default name="spp" value="4096"/>
+	<default name="resx" value="1080"/>
+	<default name="resy" value="1080"/>
+
+<!-- Camera and Rendering Parameters -->
+	<integrator type="dopplertofpath">
+		<integer name="max_depth" value="$max_depth" />
+		<float name="w_g" value="24" />
+		<!-- <float name="w_s" value="24" /> -->
+		<!-- <float name="w_s" value="24.000625" /> -->
+		<float name="hetero_frequency" value="1.0" />
+		<!-- <float name="sensor_phase_offset" value="1.5707963267948966"/> -->
+		<float name="hetero_offset" value="0.0" />
+		<float name="antithetic_shift" value="0.5" />
+		<integer name="path_correlation_depth" value="$max_depth" />
+		<!-- <string name="wave_function_type" value="rectangular"/> -->
+		<string name="time_sampling_method" value="antithetic" />
+	</integrator>
+	<sensor type="perspective" id="elm__2" name="elm__2">
+		<string name="fov_axis" value="x"/>
+		<float name="fov" value="28.072487"/>
+		<float name="principal_point_offset_x" value="0.000000"/>
+		<float name="principal_point_offset_y" value="-0.000000"/>
+		<float name="near_clip" value="0.100002"/>
+		<float name="far_clip" value="500000.000000"/>
+		<transform name="to_world">
+			<rotate x="1" angle="-2.5044780654876655e-06"/>
+			<rotate y="1" angle="4.785270367996859e-21"/>
+			<rotate z="1" angle="2.1894845052756264e-13"/>
+			<translate value="0.000000 273.000000 -800.000000"/>
+		</transform>
+		<sampler type="independent" name="sampler">
+			<integer name="sample_count" value="$spp"/>
+		</sampler>
+		<film type="hdrfilm" name="film">
+			<integer name="width" value="$resx"/>
+			<integer name="height" value="$resy"/>
+		</film>
+	</sensor>
+
+<!-- Materials -->
+
+	<bsdf type="twosided" id="default-bsdf" name="default-bsdf">
+		<bsdf type="diffuse" name="bsdf"/>
+	</bsdf>
+
+<!-- Emitters -->
+
+	<emitter type="point" id="elm__1" name="elm__1">
+		<point name="position" x="0.0" y="273.0" z="-800.0"/>
+		<rgb value="79.577469 79.577469 79.577469" name="intensity"/>
+	</emitter>
+
+<!-- Shapes -->
+
+	<shape type="ply" id="elm__4" name="elm__4">
+		<string name="filename" value="meshes/cbox_floor.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+	<shape type="ply" id="elm__5" name="elm__5">
+		<string name="filename" value="meshes/spinner.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+	<shape type="ply" id="elm__6" name="elm__6">
+		<string name="filename" value="meshes/cbox_back.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+	<shape type="ply" id="elm__7" name="elm__7">
+		<string name="filename" value="meshes/cbox_ceiling.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+	<shape type="ply" id="elm__8" name="elm__8">
+		<string name="filename" value="meshes/cbox_greenwall.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+	<shape type="ply" id="elm__9" name="elm__9">
+		<string name="filename" value="meshes/cbox_redwall.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+
+<!-- Volumes -->
+
+</scene>

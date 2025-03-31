@@ -1,0 +1,79 @@
+<scene version="2.1.0">
+
+<!-- Defaults, these can be set via the command line: -Darg=value -->
+
+	<default name="spp" value="4096"/>
+	<default name="resx" value="320"/>
+	<default name="resy" value="240"/>
+
+<!-- Camera and Rendering Parameters -->
+
+	<integrator type="path" id="elm__0" name="elm__0">
+		<integer name="max_depth" value="12"/>
+	</integrator>
+	<sensor type="perspective" id="elm__2" name="elm__2">
+		<string name="fov_axis" value="x"/>
+		<!-- <float name="fov" value="61.927515"/> 2.805763 -->
+		<float name="principal_point_offset_x" value="0.000000"/>
+		<float name="principal_point_offset_y" value="-0.000000"/>
+		<float name="near_clip" value="0.100002"/>
+		<float name="far_clip" value="500000.000000"/>
+		<transform name="to_world">
+			<rotate x="1" angle="-2.504477861932166e-06"/>
+			<rotate y="1" angle="4.785271452758471e-21"/>
+			<rotate z="1" angle="2.1894847479326914e-13"/>
+			<translate value="0.000000 3.500000 0.000000"/>
+		</transform>
+		<sampler type="independent" name="sampler">
+			<integer name="sample_count" value="$spp"/>
+		</sampler>
+		<film type="hdrfilm" name="film">
+			<integer name="width" value="$resx"/>
+			<integer name="height" value="$resy"/>
+		</film>
+	</sensor>
+
+<!-- Materials -->
+
+	<bsdf type="twosided" id="default-bsdf" name="default-bsdf">
+		<bsdf type="diffuse" name="bsdf"/>
+	</bsdf>
+
+<!-- Emitters -->
+
+	<emitter type="point" id="elm__1" name="elm__1">
+		<point name="position" x="0.0" y="2.7799899578094482" z="-100.0"/>
+		<rgb value="79.577469 79.577469 79.577469" name="intensity"/>
+	</emitter>
+
+<!-- Shapes -->
+
+	<shape type="ply" id="elm__4" name="elm__4">
+		<string name="filename" value="meshes/cbox_floor.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+	<shape type="ply" id="elm__5" name="elm__5">
+		<string name="filename" value="meshes/cbox_back.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+	<shape type="ply" id="elm__6" name="elm__6">
+		<string name="filename" value="meshes/cbox_ceiling.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+	<shape type="ply" id="elm__7" name="elm__7">
+		<string name="filename" value="meshes/left_cube.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+	<shape type="ply" id="elm__8" name="elm__8">
+		<string name="filename" value="meshes/right_cube.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="default-bsdf" name="bsdf"/>
+	</shape>
+
+<!-- Volumes -->
+
+</scene>
