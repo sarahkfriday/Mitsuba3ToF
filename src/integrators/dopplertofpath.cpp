@@ -18,7 +18,7 @@ public:
 
     DopplerToFPathIntegrator(const Properties &props) : Base(props) {
         m_is_doppler_integrator = true;
-        m_time = props.get<ScalarFloat>("time", 0.0017f);
+        m_time = props.get<ScalarFloat>("time", 0.0015f);
 
         m_illumination_modulation_frequency_mhz = props.get<ScalarFloat>("w_g", 30.0f);
         m_illumination_modulation_scale = props.get<ScalarFloat>("g_1", 0.5f);
@@ -54,13 +54,6 @@ public:
         }
 
         m_low_frequency_component_only = props.get<bool>("low_frequency_component_only", true);
-        std::cout << std::fixed;
-        std::cout << "exposure time " << m_time << std::endl;
-        std::cout << "hetero freq " << m_hetero_frequency << std::endl;
-        std::cout << "mod freq " << m_sensor_modulation_frequency_mhz << std::endl;
-        std::cout << "phase offset " << m_sensor_modulation_phase_offset*180/M_PI << std::endl;
-        std::cout << "wave function " << wave_function_type_str << std::endl;
-        std::cout << "low freq component only " << m_low_frequency_component_only << std::endl;
     }
     
 
@@ -69,12 +62,11 @@ public:
         Float w_g = 2 * M_PI * m_illumination_modulation_frequency_mhz * 1e6;
         Float w_d = 2 * M_PI / m_time * m_hetero_frequency;
         Float phi = (2 * M_PI * m_illumination_modulation_frequency_mhz) / 300 * path_length;
-        std::cout << "freq diff " << w_d << std::endl;
-
+        
         if(m_low_frequency_component_only){
             Float t = w_d * ray_time + m_sensor_modulation_phase_offset + phi;
             Float sg_t = 0.5 * m_illumination_modulation_scale * eval_modulation_function_value_low_pass<Float>(t, m_wave_function_type);
-            return 0.5 * eval_modulation_function_value_low_pass<Float>(t, m_wave_function_type);
+            return 0.5 * eval_modulation_function_value_low_pass<Float>(t, m_wave_function_type);;
         }
         
         Float t1 = w_g * ray_time - phi;

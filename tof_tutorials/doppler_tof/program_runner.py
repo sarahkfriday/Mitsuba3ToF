@@ -38,7 +38,8 @@ def run_scene_velocity(scene, scene_name, **kwargs):
     }
     total_spp = kwargs.get("total_spp", 1024)
 
-    output_path = os.path.join(kwargs.get("base_dir"), scene_name, "velocity")
+    output_path = kwargs.get("output_path")
+    # output_path = os.path.join(kwargs.get("base_dir"), scene_name, "velocity")
     if not os.path.exists(output_path):
         os.makedirs(output_path)
     output_file_name = kwargs.get("output_file_name")
@@ -61,7 +62,8 @@ def run_scene_depth(scene, scene_name, **kwargs):
         'type': 'depth'    }
     total_spp = kwargs.get("total_spp", 1024)
 
-    output_path = os.path.join(kwargs.get("base_dir"), scene_name, "depth")
+    output_path = kwargs.get("output_path")
+    # output_path = os.path.join(kwargs.get("base_dir"), scene_name, "depth")
     if not os.path.exists(output_path):
         os.makedirs(output_path)
     output_file_name = kwargs.get("output_file_name")
@@ -88,7 +90,8 @@ def run_scene_radiance(scene, scene_name, **kwargs):
     }
     total_spp = kwargs.get("total_spp", 1024)
 
-    output_path = os.path.join(kwargs.get("base_dir"), scene_name, "radiance")
+    output_path = kwargs.get("output_path")
+    # output_path = os.path.join(kwargs.get("base_dir"), scene_name, "radiance")
     if not os.path.exists(output_path):
         os.makedirs(output_path)
     output_file_name = kwargs.get("output_file_name")
@@ -121,7 +124,6 @@ def run_scene_doppler_tof(
     max_depth=2,
     use_stratified_sampling_for_each_interval=True,
     exit_if_file_exists=False,
-    base_dir=None,
     expname=None,
     scene=None,
     scene_xml=None,
@@ -129,13 +131,7 @@ def run_scene_doppler_tof(
     output_path=None,
     **kwargs
 ):
-    # print("Illum modulation freq: ", w_g)
-    # print("Exposure time: ", exposure_time)
-    # print("Hetero frequency? ", hetero_frequency)
-    if output_path is None:
-        output_path = os.path.join(scene_name, wave_function_type)
 
-    output_path = os.path.join(base_dir, output_path)
     output_file = os.path.join(output_path, "%s.npy" % expname)
 
     # check file already exists
@@ -151,10 +147,7 @@ def run_scene_doppler_tof(
             antithetic_shift = 0.5
         else:
             antithetic_shift = 0.0
-    # in homodyne case, mirrored antithetic is optimal
-    # if hetero_frequency == 0.0:
-    #     time_sampling_method = "antithetic_mirror"
-    
+
     if scene is None:
         scene = mi.load_file(scene_xml)
 

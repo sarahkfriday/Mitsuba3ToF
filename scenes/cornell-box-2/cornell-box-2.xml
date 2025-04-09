@@ -6,7 +6,7 @@
 	<integrator type="dopplertofpath">
 		<integer name="max_depth" value="$max_depth" />
 		<float name="w_g" value="300" />
-		<float name="hetero_frequency" value="1.0" />
+		<float name="hetero_frequency" value="0.0" />
 		<float name="hetero_offset" value="0.0" />
 		<float name="antithetic_shift" value="0.5" />
 		<integer name="path_correlation_depth" value="$max_depth" />

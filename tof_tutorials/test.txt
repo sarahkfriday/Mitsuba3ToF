@@ -1,0 +1,10 @@
+<bsdf type="twosided" id="WhiteBSDF">
+    <bsdf type="diffuse">
+        <rgb name="reflectance" value="1.0, 1.0, 1.0" />
+    </bsdf>
+</bsdf>
+
+<emitter type=\"$light\">
+    <point name="position" x="0.0" y="3.5" z="-100.0" />
+    <rgb name="intensity" value="1.0" />
+</emitter>

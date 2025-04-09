@@ -8,7 +8,7 @@
 		<boolean name="is_doppler_integrator" value="true"/>
 		<integer name="max_depth" value="$max_depth" />
 		<float name="w_g" value="240" />
-		<float name="hetero_frequency" value="0.0" />
+		<float name="hetero_frequency" value="-0.5" />
 		<float name="hetero_offset" value="0.5" />
 		<float name="antithetic_shift" value="0.5" />
 		<integer name="path_correlation_depth" value="$max_depth" />
@@ -19,5 +19,5 @@
 	</integrator>
 	
 	<include filename="moving_cubes_base.xml"/>
-	
+
 </scene>

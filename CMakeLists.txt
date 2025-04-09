@@ -33,7 +33,7 @@ option(MI_ENABLE_EMBREE  "Use Embree for ray tracing operations?" ON)
 
 option(MI_SANITIZE_ADDRESS "Enable GCC/Clang address sanitizer?" OFF) # To catch out-of-bounds accesses
 option(MI_SANITIZE_MEMORY  "Enable GCC/Clang memory sanitizer?"  OFF) # To catch use of uninitialized memory
-option(MI_SANITIZE_UB  "Enable GCC/Clang UB sanitizer?"  ON) # To catch use of undefined behavior
+option(MI_SANITIZE_UB  "Enable GCC/Clang UB sanitizer?"  OFF) # To catch use of undefined behavior
 
 
 option(MI_THROW_TRAPS_DEBUGGER "Trap the debugger on calls to `Throw`?" OFF)

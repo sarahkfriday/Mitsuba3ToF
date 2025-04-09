@@ -11,7 +11,6 @@ print("current director: ", current_directory)
 from program_runner import *
 
 import numpy as np
-import matplotlib.pyplot as plt
 from tqdm import tqdm, trange
 
 from utils.image_utils import *
@@ -26,11 +25,11 @@ def main():
     parser.add_argument('--config', is_config_file=True, help='config file path')
     parser.add_argument("--scene_name", help="your name")
     parser.add_argument("--wave_function_type", type=str, default="sinusoidal", help="waveform")
-    parser.add_argument("--basedir", type=str, default="./", help="base directory")
+    parser.add_argument("--scenedir", type=str, default="./", help="scene directory")
+    parser.add_argument("--outputdir", type=str, default="./", help="output directory")
     parser.add_argument("--exp_time", type=float, default=0.008, help="integration time in sec")
     parser.add_argument("--mod_freq", type=float, default = 24.0, help="modulation frequency in MHz")
     parser.add_argument("--corr_depth", type=int, default=2, help="path correlation depth")
-    parser.add_argument("--subdir", type=str, default="", help="sub directory for the results")
 
     args = parser.parse_args()
     scene_name = args.scene_name
@@ -38,7 +37,7 @@ def main():
     exposure_time = args.exp_time
     modulation_freq = args.mod_freq
     correlation_depth = args.corr_depth
-    subdir = args.subdir
+    outputdir = args.outputdir
 
     # w_o = pi / exposure_time
     # w_of = (2.0*pi) / exposure_time
@@ -51,7 +50,7 @@ def main():
         print("scene name not found")
         return
     scene_config = scene_configs[scene_name]
-    scene_base_dir = os.path.join(args.basedir, "scenes", scene_name)
+    scene_base_dir = os.path.join(args.scenedir, "scenes", scene_name)
 
     hetero_offsets = [0.0, 0.25, 0.5, 0.75]  # phase offset [0,1] -> [0, 2pi]
     hetero_offsets_hu = [0.75, 0.0, 0.25, 0.5]
@@ -65,14 +64,12 @@ def main():
     
     exit_if_file_exists = False
 
-    output_base_dir =  "result"
-
     # Render GT radiance
     run_scene_radiance(
         scene, 
         scene_name,
-        base_dir=output_base_dir,
         output_file_name="{}_radiance".format(scene_name),
+        output_path=outputdir,
         exit_if_file_exists=exit_if_file_exists
     )
     print("Done rendering radiance")
@@ -82,8 +79,8 @@ def main():
     run_scene_velocity(
         scene, 
         scene_name,
-        base_dir=output_base_dir,
         output_file_name="{}_velocity".format(scene_name),
+        output_path=outputdir,
         exit_if_file_exists=exit_if_file_exists,
         **scene_config
     )
@@ -94,8 +91,8 @@ def main():
     run_scene_depth(
         scene, 
         scene_name,
-        base_dir=output_base_dir,
         output_file_name="{}_depth".format(scene_name),
+        output_path=outputdir, 
         exit_if_file_exists=exit_if_file_exists
     )
     print("Done rendering depth")
@@ -128,31 +125,28 @@ def main():
 
         # (1) Render homodyne (no variation is used for homodyne)
         homodyne_image = run_scene_doppler_tof(
-            base_dir=output_base_dir,
-            expname=homodyne_output_file_name,
             hetero_offset=hetero_offsets[i],
             hetero_frequency=0.0,
-            output_path=subdir,
+            output_path=outputdir,
+            expname=homodyne_output_file_name,
             **common_configs
         )
 
         # (2) Render heterodyne heide et al's method, pure OF        
         OFheterodyne_image = run_scene_doppler_tof(
-            base_dir=output_base_dir,
-            expname=OF_heterodyne_output_file_name,
             hetero_frequency=1.0,  
             hetero_offset=hetero_offsets[i],
-            output_path=subdir,
+            output_path=outputdir,
+            expname=OF_heterodyne_output_file_name,
             **common_configs
         )
 
         # (3) Render heterodyne hu et al's method, offset btw [0, 2pi/T]
         heterodyne_image = run_scene_doppler_tof(
-            base_dir=output_base_dir,
-            expname=heterodyne_output_file_name,
             hetero_frequency = hetero_freqs_hu[i], 
             hetero_offset=hetero_offsets_hu[i],
-            output_path=subdir,
+            output_path=outputdir,
+            expname=heterodyne_output_file_name,
             **common_configs
         )
     
