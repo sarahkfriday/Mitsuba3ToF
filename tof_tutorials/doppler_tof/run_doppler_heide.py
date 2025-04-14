@@ -58,8 +58,9 @@ def main():
 
     # load the scene
     scene_filename = os.path.join(scene_base_dir, scene_name+".xml")
+    scene_camera = os.path.join(scene_base_dir, scene_name+"_camera.xml")
     # change the shutter close time to match exposure time
-    # change_shutter_close(scene_filename, exposure_time)
+    change_shutter_close(scene_camera, exposure_time)
     scene = mi.load_file(scene_filename) # load the scene xml file
     
     exit_if_file_exists = False

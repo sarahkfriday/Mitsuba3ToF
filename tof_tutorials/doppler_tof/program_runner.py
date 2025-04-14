@@ -55,6 +55,7 @@ def run_scene_velocity(scene, scene_name, **kwargs):
     img_velocity = render_image_multi_pass(scene, integrator_velocity, single_pass_spp, total_spp // single_pass_spp, show_progress=show_progress)
     
     img_velocity = rgb2luminance(img_velocity)
+    print("Saving result as ", numpy_output_file_name)
     np.save(numpy_output_file_name, img_velocity)
     
 def run_scene_depth(scene, scene_name, **kwargs):
@@ -80,6 +81,7 @@ def run_scene_depth(scene, scene_name, **kwargs):
     img = render_image_multi_pass(scene, integrator_depth, single_pass_spp, total_spp // single_pass_spp, show_progress=show_progress)
     
     img = rgb2luminance(img)
+    print("Saving result as ", numpy_output_file_name)
     np.save(numpy_output_file_name, img)
 
 
@@ -108,6 +110,7 @@ def run_scene_radiance(scene, scene_name, **kwargs):
     img = render_image_multi_pass(scene, integrator_radiance, single_pass_spp, total_spp // single_pass_spp, show_progress=show_progress)
     
     img = rgb2luminance(img)
+    print("Saving result as ", numpy_output_file_name)
     np.save(numpy_output_file_name, img)
 
 def run_scene_doppler_tof(
@@ -194,6 +197,7 @@ def run_scene_doppler_tof(
     img_dop = render_image_multi_pass(scene, integrator_doppler, single_pass_spp, total_spp // single_pass_spp, show_progress=show_progress)
     
     img_dop = to_tof_image(img_dop, exposure_time)
+    print("Saving result as ", output_file)
     np.save(output_file, img_dop)
 
     return img_dop
