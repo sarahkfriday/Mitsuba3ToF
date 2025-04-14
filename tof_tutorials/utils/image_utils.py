@@ -4,6 +4,13 @@ import os
 import cv2
 import xml.etree.ElementTree as ET
 
+def get_shutter_open(filepath):
+    xml_file = ET.parse(filepath)
+    root = xml_file.getroot()
+    open_element=root.find(".//sensor/float[@name='shutter_open']") # get the correct element
+    shutter_open = open_element.get('value', str(0.0))
+    return float(shutter_open)
+
 '''
     Change shutter_close
     does not change shutter_close if new value matches previous
