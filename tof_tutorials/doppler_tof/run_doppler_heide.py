@@ -67,15 +67,15 @@ def main():
     exit_if_file_exists = False
 
     # Render GT radiance
-    run_scene_radiance(
-        scene, 
-        scene_name,
-        output_file_name="{}_radiance".format(scene_name),
-        output_path=outputdir,
-        exit_if_file_exists=exit_if_file_exists
-    )
-    print("Done rendering radiance")
-    print("=================================")
+    # run_scene_radiance(
+    #     scene, 
+    #     scene_name,
+    #     output_file_name="{}_radiance".format(scene_name),
+    #     output_path=outputdir,
+    #     exit_if_file_exists=exit_if_file_exists
+    # )
+    # print("Done rendering radiance")
+    # print("=================================")
 
     # Render GT radial velocity
     run_scene_velocity(

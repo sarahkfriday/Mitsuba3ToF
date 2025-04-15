@@ -32,6 +32,7 @@ def render_image_multi_pass(scene, integrator, single_pass_spp, total_pass, show
     return img
 
 def run_scene_velocity(scene, scene_name, **kwargs):
+    print("capture time: ", kwargs.get("capture_time", 0.0017))
     velocity_rendering_config_dict = {
         'type': 'velocity',
         'time': kwargs.get("capture_time", 0.0017)
