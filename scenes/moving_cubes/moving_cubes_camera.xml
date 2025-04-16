@@ -1,0 +1,24 @@
+<scene version="3.0.0">
+<sensor type="perspective">
+		<string name="fov_axis" value="x" />
+		<float name="fov" value="61.927515" />
+		<float name="near_clip" value="1.0e-10" />
+		<float name="far_clip" value="500000.000000" />
+		<transform name="to_world">
+			<translate value="0.000000 3.5 0.0" />
+		</transform>
+		<sampler type="correlated">
+			<integer name="sample_count" value="1024" />
+		</sampler>
+		<film type="hdrfilm" name="film">
+			<integer name="width" value="320" />
+			<integer name="height" value="240" />
+		</film>
+		<float name="shutter_open" value="0.0" />
+		<float name="shutter_close" value="0.0017" />
+		<integer name="crop_width" value="320" />
+		<integer name="crop_height" value="240" />
+		<integer name="crop_offset_y" value="0" />
+		<integer name="crop_offset_x" value="0" />
+	</sensor>
+</scene>
