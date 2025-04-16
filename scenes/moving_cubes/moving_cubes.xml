@@ -1,12 +1,9 @@
 <scene version="3.0.0">
-	<default name="spp" value="1024" />
-	<default name="resx" value="320" />
-	<default name="resy" value="240" />
-
 	<integrator type="path">
 		<integer name="max_depth" value="2" />
 	</integrator>
 
+	<include filename="moving_cubes_camera.xml"/>
 	<include filename="moving_cubes_base.xml"/>
 
 </scene>
