@@ -6,4 +6,6 @@
 	<integrator type="depth" />
 
 	<include filename="moving_cubes_base.xml"/>
+	<include filename="moving_cubes_camera.xml"/>
+
 </scene>

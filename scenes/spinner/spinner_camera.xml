@@ -16,7 +16,7 @@
 			<integer name="crop_offset_y" value="0" />
 			<integer name="crop_offset_x" value="0" />
 		</film>
-		<float name="shutter_open" value="0.0104" />
-		<float name="shutter_close" value="0.0121" />
+		<float name="shutter_open" value="0.0" />
+		<float name="shutter_close" value="0.0017" />
 	</sensor>
 </scene>
