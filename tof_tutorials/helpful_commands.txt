@@ -6,7 +6,7 @@ powershell -ExecutionPolicy ByPass -NoExit -Command "& 'C:\Users\f005cbs\AppData
 
 
 python doppler_tof/run_doppler_heide.py --mod_freq 24 --exp_time 0.0017 --scene_name moving_cubes --scenedir C:/Users/f005cbs/Documents/GitHub/Mitsuba3ToF --outputdir "C:\\Users\\f005cbs\\Dartmouth College Dropbox\\Sarah Friday\\Snapshot-Doppler\\snapshot-cp-doppler\\data\\moving_cubes\\point\\atten\\windows\\batch\\"
-python doppler_tof/run_doppler_heide.py --mod_freq 240 --exp_time 0.0017 --scene_name moving_cubes --scenedir C:/Users/f005cbs/Documents/GitHub/Mitsuba3ToF --outputdir "C:\\Users\\f005cbs\\Documents\\GitHub\\Mitsuba3ToF\\tof_tutorials\\result\\moving_cubes\\point\\noatten\\24MHz\\" --scene_name spinner --mod_freq 24 --exp_time 0.0017 
+python doppler_tof/run_doppler_heide.py --mod_freq 240 --exp_time 0.0017 --scene_name moving_cubes --scenedir C:/Users/f005cbs/Documents/GitHub/Mitsuba3ToF --outputdir "C:\\Users\\f005cbs\\Documents\\GitHub\\Mitsuba3ToF\\tof_tutorials\\result\\spinner\\point\\noatten\\24MHz\\" --scene_name spinner --mod_freq 24 --exp_time 0.0017 
 python doppler_tof/run_doppler_heide.py  --scenedir C:/Users/f005cbs/Documents/GitHub/Mitsuba3ToF --outputdir "C:\\Users\\f005cbs\\Documents\\GitHub\\Mitsuba3ToF\\tof_tutorials\\result\\spinner\\point\\noatten\\24MHz"
 mitsuba scenes/cornell-box-2/cornell-box-2.xml -m "llvm_ad_rgb" -o "C:\\Users\\f005cbs\\Dartmouth College Dropbox\\Sarah Friday\\Snapshot-Doppler\\snapshot-cp-doppler\\data\\cornell-box-2\\"
 

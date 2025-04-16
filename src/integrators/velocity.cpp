@@ -91,6 +91,8 @@ public:
     MI_IMPORT_TYPES(Scene, Sampler, Medium, Emitter, EmitterPtr, BSDF, BSDFPtr)
 
     VelocityIntegrator(const Properties &props) : Base(props) { 
+        m_shutter_open = props.get<ScalarFloat>("shutter_open", 0.0f);
+        m_shutter_close = props.get<ScalarFloat>("shutter_close", 0.0015f);
         m_time = props.get<ScalarFloat>("time", 0.0015f);
     }
 
@@ -121,13 +123,17 @@ public:
         Float         prev_bsdf_pdf   = 1.f;
         Bool          prev_bsdf_delta = true;
         BSDFContext   bsdf_ctx;
-
-        ray.time = 0.0;
+        
+        ray.time = m_shutter_open;
+        std::cout << std::fixed;
+        std::cout << "time: " << m_time << std::endl;
+        std::cout << "open: " << m_shutter_open << std::endl;
         SurfaceInteraction3f si1 =
             scene->ray_intersect(ray,
                                     /* ray_flags = */ +RayFlags::All,
                                     /* coherent = */ dr::eq(depth, 0u));
-        ray.time = m_time;
+        ray.time = m_shutter_close;
+        std::cout << "close: " << m_shutter_close << std::endl;
         SurfaceInteraction3f si2 =
             scene->ray_intersect(ray,
                                     /* ray_flags = */ +RayFlags::All,
@@ -174,6 +180,8 @@ public:
 
     MI_DECLARE_CLASS()
     ScalarFloat m_time;
+    ScalarFloat m_shutter_open;
+    ScalarFloat m_shutter_close;
 };
 
 MI_IMPLEMENT_CLASS_VARIANT(VelocityIntegrator, MonteCarloIntegrator)
