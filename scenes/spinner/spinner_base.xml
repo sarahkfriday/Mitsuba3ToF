@@ -22,8 +22,8 @@
 		<ref id="WhiteBSDF" />
 	</shape>
 
-	<shape type="ply" id="spinner" name="spinner">
-		<string name="filename" value="meshes/spinner.ply"/>
+	<shape type="ply" id="monkey" name="monkey">
+		<string name="filename" value="meshes/Suzanne.ply"/>
 		<boolean name="face_normals" value="true"/>
 		<ref id="WhiteBSDF" />
 		<animation name="to_world">
@@ -35,5 +35,19 @@
 			</transform>
 		</animation>
 	</shape>
+
+	<!-- <shape type="ply" id="spinner" name="spinner">
+		<string name="filename" value="meshes/spinner.ply"/>
+		<boolean name="face_normals" value="true"/>
+		<ref id="WhiteBSDF" />
+		<animation name="to_world">
+			<transform time="0">
+				<rotate value="0, 1, 0" angle="0" />
+			</transform>
+			<transform time="0.0625">
+				<rotate value="0, 1, 0" angle="180" />
+			</transform>
+		</animation>
+	</shape> -->
 
 </scene>
