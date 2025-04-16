@@ -2,12 +2,13 @@
 Taken from https://github.com/juhyeonkim95/Mitsuba3DopplerToF/blob/main/doppler_tutorials/src/program_runner.py
 """
 
-import mitsuba as mi
-mi.set_variant('llvm_ad_rgb')
 import os
 import numpy as np
 from utils.image_utils import *
 from tqdm import tqdm, trange
+
+import mitsuba as mi
+mi.set_variant('llvm_ad_rgb')
 
 def render_image_multi_pass(scene, integrator, single_pass_spp, total_pass, show_progress=False):
     img_sum = None

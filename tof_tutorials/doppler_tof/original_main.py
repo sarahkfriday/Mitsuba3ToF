@@ -7,15 +7,16 @@ import os
 # os.system("export DRJIT_LIBLLVM_PATH=/Users/sarahfriday/anaconda3/pkgs/libllvm12-12.0.0-h12f7ac0_4/lib/libLLVM-12.dylib")
 
 print('DrJit path: ', os.environ['DRJIT_LIBLLVM_PATH'])
-import mitsuba as mi
 
 import numpy as np
-variant = "llvm_ad_rgb"
-mi.set_variant(variant)
 from tqdm import tqdm, trange
 import matplotlib.pyplot as plt
 import cv2
 from utils.image_utils import *
+
+import mitsuba as mi
+variant = "llvm_ad_rgb"
+mi.set_variant(variant)
 
 def run_scene(
     scene_name="cornell-box-2",
@@ -36,7 +37,7 @@ def run_scene(
     image *= exposure_time # exposure time
     
     output_folder = "result/%s" % (scene_name)
-    filename = 'cbox_2_heterodyne'
+    filename = 'cornell-box-2-homodyne'
     np.save(output_folder + '/' + filename + '.npy', rgb2luminance(image))
 
 if __name__ == "__main__":

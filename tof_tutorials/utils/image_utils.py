@@ -1,7 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import os
 import cv2
+import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 
 def get_shutter_open(filepath):

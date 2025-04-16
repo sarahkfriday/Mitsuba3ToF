@@ -32,13 +32,14 @@ phases = [0, 90, 180, 270]
 freq_modes = ['homodyne', 'OFheterodyne', 'heterodyne']
 
 result_filepath = "./result/moving_cubes/"
-out_filepath = "C:\\Users\\f005cbs\\Dartmouth College Dropbox\\Sarah Friday\\Snapshot-Doppler\\snapshot-cp-doppler\\data\\moving_cubes\\point\\{}\\windows\\individual\\".format(emit_mode)
-convert_exr_npy(result_filepath + "point/{}/".format(emit_mode), "moving_cubes_depth.exr", 0.0017, output_filepath=out_filepath)
-convert_exr_npy(result_filepath + "point/{}/".format(emit_mode), "moving_cubes_radiance.exr", 0.0017, output_filepath=out_filepath)
-convert_exr_npy(result_filepath + "point/{}/".format(emit_mode), "moving_cubes_velocity.exr", 0.0017, output_filepath=out_filepath)
+out_filepath = "/home/sarah/Documents/GitHub/Mitsuba3ToF/tof_tutorials/result/moving_cubes/point/noatten/individual/240MHz/"
+# out_filepath = "C:\\Users\\f005cbs\\Dartmouth College Dropbox\\Sarah Friday\\Snapshot-Doppler\\snapshot-cp-doppler\\data\\moving_cubes\\point\\{}\\windows\\individual\\".format(emit_mode)
+convert_exr_npy(result_filepath + "point/{}/individual/240MHz/".format(emit_mode), "moving_cubes_depth.exr", 0.0017, output_filepath=out_filepath)
+convert_exr_npy(result_filepath + "point/{}/individual/240MHz/".format(emit_mode), "moving_cubes_radiance.exr", 0.0017, output_filepath=out_filepath)
+convert_exr_npy(result_filepath + "point/{}/individual/240MHz/".format(emit_mode), "moving_cubes_velocity.exr", 0.0017, output_filepath=out_filepath)
 
 for p in phases:
-    convert_exr_npy(result_filepath + "point/{}/".format(emit_mode), "moving_cubes_homodyne_phase{}.exr".format(str(p)), 0.0017, output_filepath=out_filepath, tof=True)
-    convert_exr_npy(result_filepath + "point/{}/".format(emit_mode), "moving_cubes_OFheterodyne_phase{}.exr".format(str(p)), 0.0017, output_filepath=out_filepath, tof=True)
-    convert_exr_npy(result_filepath + "point/{}/".format(emit_mode), "moving_cubes_heterodyne_phase{}.exr".format(str(p)), 0.0017, output_filepath=out_filepath, tof=True)
+    convert_exr_npy(result_filepath + "point/{}/individual/240MHz/".format(emit_mode), "moving_cubes_homodyne_phase{}.exr".format(str(p)), 0.0017, output_filepath=out_filepath, tof=True)
+    convert_exr_npy(result_filepath + "point/{}/individual/240MHz/".format(emit_mode), "moving_cubes_OFheterodyne_phase{}.exr".format(str(p)), 0.0017, output_filepath=out_filepath, tof=True)
+    convert_exr_npy(result_filepath + "point/{}/individual/240MHz/".format(emit_mode), "moving_cubes_heterodyne_phase{}.exr".format(str(p)), 0.0017, output_filepath=out_filepath, tof=True)
 
