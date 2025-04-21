@@ -11,7 +11,7 @@ mitsuba scenes/cornell-box-2/cornell-box-2.xml -m "llvm_ad_rgb" -o "C:\\Users\\f
 
 fov values for spinner scene
 - 10m: 2.115296
-- 0m : 19.455159
+- 1m : 19.455159
 
 fov values for moving_cubes scene
 - 100m: 2.805763

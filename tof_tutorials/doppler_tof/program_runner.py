@@ -96,14 +96,6 @@ def run_scene_radiance(scene, scene_name, **kwargs):
 
     output_path = kwargs.get("output_path")
     # output_path = os.path.join(kwargs.get("base_dir"), scene_name, "radiance")
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
-    output_file_name = kwargs.get("output_file_name")
-    numpy_output_file_name = os.path.join(output_path, "%s.npy" % output_file_name)
-
-    if os.path.exists(numpy_output_file_name) and kwargs.get("exit_if_file_exists", False):
-       print("File already exists!")
-       return
 
     integrator_radiance = mi.load_dict(config_dict)
     single_pass_spp = min(1024, total_spp)
@@ -112,8 +104,21 @@ def run_scene_radiance(scene, scene_name, **kwargs):
     img = render_image_multi_pass(scene, integrator_radiance, single_pass_spp, total_spp // single_pass_spp, show_progress=show_progress)
     
     img = rgb2luminance(img)
-    print("Saving result as ", numpy_output_file_name)
-    np.save(numpy_output_file_name, img)
+
+    if output_path is not None and output_file_name is not None:
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+        output_file_name = kwargs.get("output_file_name")
+        numpy_output_file_name = os.path.join(output_path, "%s.npy" % output_file_name)
+
+        if os.path.exists(numpy_output_file_name) and kwargs.get("exit_if_file_exists", False):
+            print("File already exists!")
+            return
+
+        print("Saving result as ", numpy_output_file_name)
+        np.save(numpy_output_file_name, img)
+    else:
+        return img
 
 def run_scene_doppler_tof(
     scene_name="cornell-box",
@@ -136,16 +141,7 @@ def run_scene_doppler_tof(
     output_path=None,
     **kwargs
 ):
-
     output_file = os.path.join(output_path, "%s.npy" % expname)
-
-    # check file already exists
-    if os.path.exists(output_file) and exit_if_file_exists:
-        print("File already exists: returning existing file")
-        return np.load(output_file)
-    else:
-        if not os.path.exists(output_path):
-            os.makedirs(output_path)
     
     if antithetic_shift is None:
         if time_sampling_method == "antithetic":
@@ -199,7 +195,17 @@ def run_scene_doppler_tof(
     img_dop = render_image_multi_pass(scene, integrator_doppler, single_pass_spp, total_spp // single_pass_spp, show_progress=show_progress)
     
     img_dop = to_tof_image(img_dop, exposure_time)
-    print("Saving result as ", output_file)
-    np.save(output_file, img_dop)
 
-    return img_dop
+    if output_path is not None:
+        # check file already exists
+        if os.path.exists(output_file) and exit_if_file_exists:
+            print("File already exists: returning existing file")
+            return np.load(output_file)
+        else:
+            if not os.path.exists(output_path):
+                os.makedirs(output_path)
+
+        print("Saving result as ", output_file)
+        np.save(output_file, img_dop)
+    else:
+        return img_dop

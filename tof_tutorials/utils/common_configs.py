@@ -31,6 +31,14 @@ Taken from https://github.com/juhyeonkim95/Mitsuba3DopplerToF/blob/main/doppler_
 
 def get_animation_scene_configs():
     scene_configs = {
+        "monkey" : {
+            "max_depth": 2,
+            "total_spp": 1024,
+            "intervals": 1,
+            "exposure_time": 0.002,
+            "resx": 320,
+            "resy": 240
+        },
         "spinner" : {
             "max_depth": 2,
             "total_spp": 1024,

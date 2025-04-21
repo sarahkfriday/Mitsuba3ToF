@@ -44,8 +44,8 @@ def iterate_shutter(filepath, exposure_time):
     
     prev_open = float(open_element.get('value', 0.0))
     prev_close = float(close_element.get('value', 0.0))
-    print('previous open: ', prev_open)
-    print('previous close: ', prev_close)
+    # print('previous open: ', prev_open)
+    # print('previous close: ', prev_close)
 
     # set the new value
     open_element.set('value', str(prev_close))
@@ -54,26 +54,79 @@ def iterate_shutter(filepath, exposure_time):
     # write out to file
     xml_file.write(filepath)
 
+def init_crop(filepath, var_axis):
+    xml_file = ET.parse(filepath)
+    root = xml_file.getroot()
+    
+    if var_axis == 'x':
+        crop_element=root.find(".//sensor/film/integer[@name='crop_width']") # get the correct element
+    else:
+        crop_element=root.find(".//sensor/film/integer[@name='crop_height']") # get the correct element
+
+    crop_element.set('value', str(1))
+    
+    # write out to file
+    xml_file.write(filepath)
+
+def iterate_crop(filepath, var_axis):
+    xml_file = ET.parse(filepath)
+    root = xml_file.getroot()
+    
+    if var_axis == 'x':
+        crop_element=root.find(".//sensor/film/integer[@name='crop_offset_x']") # get the correct element
+        crop_size = root.find(".//sensor/film/integer[@name='width']")
+    else:
+        crop_element=root.find(".//sensor/film/integer[@name='crop_offset_y']") # get the correct element
+        crop_size = root.find(".//sensor/film/integer[@name='height']")
+
+    max_crop_offset = int(crop_size.get('value'))
+    prev_crop_offset = int(crop_element.get('value', 0.0))
+    next_crop_offset = int(prev_crop_offset+1)
+    
+    if next_crop_offset < max_crop_offset:
+        # iterate 1 line
+        crop_element.set('value', str(next_crop_offset))
+
+        # write out to file
+        xml_file.write(filepath)
+
+def reset_crop(filepath, var_axis):
+    xml_file = ET.parse(filepath)
+    root = xml_file.getroot()
+    
+    if var_axis == 'x':
+        crop_offset_element=root.find(".//sensor/film/integer[@name='crop_offset_x']") # get the correct element
+        crop_dim_element=root.find(".//sensor/film/integer[@name='crop_width']")
+        crop_size = root.find(".//sensor/film/integer[@name='width']")
+    else:
+        crop_offset_element=root.find(".//sensor/film/integer[@name='crop_offset_y']") # get the correct element
+        crop_dim_element=root.find(".//sensor/film/integer[@name='crop_height']")
+        crop_size = root.find(".//sensor/film/integer[@name='height']")
+    
+    reset_val = crop_size.get('value')
+    crop_offset_element.set('value', str(0))
+    crop_dim_element.set('value', reset_val)
+
+    # write out to file
+    xml_file.write(filepath)
+
 def main():
     parser = configargparse.ArgumentParser()
-    parser.add_argument('--config', is_config_file=True, help='config file path')
     parser.add_argument("--scene_name", help="scene name")
-    parser.add_argument("--num_frames", type=int, default=1, help="number of frames")
-    # parser.add_argument("--wave_function_type", type=str, default="sinusoidal", help="waveform")
+    parser.add_argument("--var_axis", type=str, default='y', help="axis on which to vary the freq")
+    parser.add_argument("--wave_function_type", type=str, default="sinusoidal", help="waveform")
     parser.add_argument("--scenedir", type=str, default="./", help="scene directory")
     parser.add_argument("--outputdir", type=str, default="./", help="output directory")
     parser.add_argument("--exp_time", type=float, default=0.008, help="integration time per frame in sec")
-    # parser.add_argument("--mod_freq", type=float, default = 24.0, help="modulation frequency in MHz")
-    # parser.add_argument("--corr_depth", type=int, default=2, help="path correlation depth")
+    parser.add_argument("--mod_freq", type=float, default = 24.0, help="modulation frequency in MHz")
 
     args = parser.parse_args()
     scene_name = args.scene_name
-    # wave_function_type = args.wave_function_type
+    wave_function_type = args.wave_function_type
     exposure_time = args.exp_time
-    # modulation_freq = args.mod_freq
-    # correlation_depth = args.corr_depth
+    modulation_freq = args.mod_freq
     outputdir = args.outputdir
-    num_frames = args.num_frames
+    var_axis = args.var_axis
 
     # w_o = pi / exposure_time
     # w_of = (2.0*pi) / exposure_time
@@ -86,19 +139,28 @@ def main():
         print("scene name not found")
         return
     scene_config = scene_configs[scene_name]
+    # get the dimensions of the images from config
+    img_width = scene_config.get('resx')
+    img_height = scene_config.get('resy')
+
     scene_base_dir = os.path.join(args.scenedir, "scenes", scene_name)
 
-    hetero_offsets = [0.0, 0.25, 0.5, 0.75]  # phase offset [0,1] -> [0, 2pi]
     hetero_offsets_hu = [0.75, 0.0, 0.25, 0.5]
-    hetero_freqs_hu = [0.5, 0.5, -0.5, -0.5] # pos, pos, neg, neg
 
+    # set up the spatially varying freq offset
+    if var_axis == 'x':
+        snapshot_freq = np.linspace(0, 0.5, img_width)
+        num_lines = img_width
+    else:
+        snapshot_freq = np.linspace(0, 0.5, img_height)
+        num_lines = img_height
+   
     # load the scene
     scene_filename = os.path.join(scene_base_dir, scene_name+".xml")
     scene_camera = os.path.join(scene_base_dir, scene_name+"_camera.xml")
     
-    # change the shutter close time to match exposure time
-    shutter_open = get_shutter_open(scene_camera)
-    change_shutter_close(scene_camera, shutter_open+exposure_time)
+    # change the crop dimension depending on if varying on x or y axis
+    init_crop(scene_camera, var_axis)
     
     exit_if_file_exists = False
 
@@ -114,19 +176,26 @@ def main():
     #     "exit_if_file_exists": exit_if_file_exists,
     #     "show_progress": False
     # }
-    
-    for i in trange(num_frames):
+    if var_axis == 'x':
+        dummy_line = np.ones((1, img_height))
+    else:
+        dummy_line = np.ones((img_width, 1))
+    snapshot_img = []
+    for i in trange(num_lines):
         scene = mi.load_file(scene_filename) # load the scene xml file
 
         # Render GT radiance
-        run_scene_radiance(
+        # line = i * dummy_line
+        line = run_scene_radiance(
             scene, 
             scene_name,
-            output_file_name="{}_frame{}".format(scene_name, i),
-            output_path=outputdir,
+            output_file_name=None,
             exit_if_file_exists=exit_if_file_exists
         )
+        snapshot_img.append(line)
+
         iterate_shutter(scene_camera, exposure_time)
+        iterate_crop(scene_camera, var_axis)
         # (3) Render heterodyne hu et al's method, offset btw [0, 2pi/T]
         # heterodyne_image = run_scene_doppler_tof(
         #     hetero_frequency = hetero_freqs_hu[i], 
@@ -135,7 +204,15 @@ def main():
         #     expname=heterodyne_output_file_name,
         #     **common_configs
         # )
-    reset_shutter(scene_camera, exposure_time, open=shutter_open)
+    snapshot_img = np.squeeze(np.array(snapshot_img))
+    print('snapshot_img size:', snapshot_img.shape)
+    output_filename = 'snapshot_{}MHz_{}us.npy'.format(modulation_freq, exposure_time)
+    output_path = os.path.join(outputdir, output_filename)
+    print("Saving snapshot at ", output_path)
+    np.save(output_path, snapshot_img)
+
+    reset_shutter(scene_camera, exposure_time)
+    reset_crop(scene_camera, var_axis)
     print("Experiments complete.")      
 
 if __name__ == "__main__":
