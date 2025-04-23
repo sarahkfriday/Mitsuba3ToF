@@ -19,4 +19,6 @@ fov values for moving_cubes scene
 
 python doppler_tof/run_doppler_heide.py  --scenedir /home/sarah/Documents/GitHub/Mitsuba3ToF/ --outputdir "/home/sarah/Documents/GitHub/Mitsuba3ToF/tof_tutorials/result/spinner/point/noatten/24MHz" --scene_name spinner --mod_freq 24 --exp_time 0.0017
 
-python doppler_tof/run_doppler_heide.py  --scenedir "/home/sarah/Documents/GitHub/Mitsuba3ToF/" --outputdir "/home/sarah/Documents/GitHub/Mitsuba3ToF/tof_tutorials/result/moving_cubes/point/noatten/batch/240MHz" --scene_name moving_cubes --mod_freq 240 --exp_time 0.0017
+python doppler_tof/run_doppler_heide.py  --scenedir "/home/sarah/Documents/GitHub/Mitsuba3ToF/" --outputdir "/home/sarah/Documents/GitHub/Mitsuba3ToF/tof_tutorials/result/monkey/point/noatten/batch/240MHz" --scene_name monkey --mod_freq 240 --exp_time 0.0017
+
+python doppler_tof/create_snapshot_meas.py --scene_name moving_cubes --var_axis 'y' --scenedir "/home/sarah/Documents/GitHub/Mitsuba3ToF/" --exp_time 0.0017 --mod_freq 240.0 --outputdir "/home/sarah/Documents/GitHub/Mitsuba3ToF/tof_tutorials/result/moving_cubes/point/noatten/batch/240MHz"

@@ -22,8 +22,8 @@
 		<ref id="WhiteBSDF" />
 	</shape>
 
-	<shape type="ply" id="spinner" name="spinner">
-		<string name="filename" value="meshes/spinner.ply"/>
+	<shape type="ply" id="monkey" name="monkey">
+		<string name="filename" value="meshes/Suzanne.ply"/>
 		<boolean name="face_normals" value="true"/>
 		<ref id="WhiteBSDF" />
 		<animation name="to_world">

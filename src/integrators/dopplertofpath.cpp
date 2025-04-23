@@ -32,7 +32,7 @@ public:
         }
         if(props.has_property("hetero_frequency")){
             m_hetero_frequency = props.get<ScalarFloat>("hetero_frequency", 1.0);
-            m_sensor_modulation_frequency_mhz = m_illumination_modulation_frequency_mhz + m_hetero_frequency / m_time * 1e-6;
+            m_sensor_modulation_frequency_mhz = m_illumination_modulation_frequency_mhz + ((m_hetero_frequency / (2*m_time)) * 1e-6);
         } else {
             m_hetero_frequency = (m_sensor_modulation_frequency_mhz - m_illumination_modulation_frequency_mhz) * 1e6 * m_time;
         }
@@ -60,13 +60,19 @@ public:
     Float eval_modulation_weight(Float ray_time, Float path_length) const
     {
         Float w_g = 2 * M_PI * m_illumination_modulation_frequency_mhz * 1e6;
-        Float w_d = 2 * M_PI / m_time * m_hetero_frequency;
+        Float w_d = M_PI / m_time * m_hetero_frequency;
         Float phi = (2 * M_PI * m_illumination_modulation_frequency_mhz) / 300 * path_length;
         
+        // std::cout << std::fixed;
+        // std::cout << "hetero freq = " << m_hetero_frequency << std::endl;
+        // std::cout << "w_g = " << w_g << std::endl;
+        // std::cout<< "w_diff= " << w_d << std::endl; 
+        // std::cout << "sensor mod freq (MHz) = " << m_sensor_modulation_frequency_mhz << std::endl;
+
         if(m_low_frequency_component_only){
             Float t = w_d * ray_time + m_sensor_modulation_phase_offset + phi;
             Float sg_t = 0.5 * m_illumination_modulation_scale * eval_modulation_function_value_low_pass<Float>(t, m_wave_function_type);
-            return 0.5 * eval_modulation_function_value_low_pass<Float>(t, m_wave_function_type);;
+            return 0.5 * eval_modulation_function_value_low_pass<Float>(t, m_wave_function_type);
         }
         
         Float t1 = w_g * ray_time - phi;
@@ -161,6 +167,7 @@ public:
 
 
                 // Accumulate, being careful with polarization (see spec_fma)
+                // result=length_weight;
                 result = spec_fma(
                     throughput,
                     ds.emitter->eval(si, prev_bsdf_pdf > 0.f) * mis_bsdf * length_weight,
@@ -221,6 +228,7 @@ public:
                 Float length_weight = eval_modulation_weight(ray.time, em_path_length);
 
                 // Accumulate, being careful with polarization (see spec_fma)
+                // result[active_em] = length_weight;
                 result[active_em] = spec_fma(
                     throughput, bsdf_val * em_weight * mis_em * length_weight, result);
             }

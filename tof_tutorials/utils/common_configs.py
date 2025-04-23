@@ -35,7 +35,6 @@ def get_animation_scene_configs():
             "max_depth": 2,
             "total_spp": 1024,
             "intervals": 1,
-            "exposure_time": 0.002,
             "resx": 320,
             "resy": 240
         },
@@ -43,7 +42,6 @@ def get_animation_scene_configs():
             "max_depth": 2,
             "total_spp": 1024,
             "intervals": 1,
-            "exposure_time": 0.002,
             "resx": 320,
             "resy": 240
         },
@@ -51,7 +49,6 @@ def get_animation_scene_configs():
             "max_depth": 2,
             "total_spp": 1024,
             "intervals": 1,
-            "exposure_time": 0.0017,
             "resx": 320,
             "resy": 240
         },

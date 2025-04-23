@@ -13,6 +13,7 @@ import numpy as np
 from tqdm import tqdm, trange
 
 from utils.image_utils import *
+from utils.xml_utils import *
 import configargparse
 from utils.common_configs import *
 
@@ -20,100 +21,90 @@ c=3.0e8
 pi = np.pi
 
 def main():
-    print("main")
     parser = configargparse.ArgumentParser()
-    parser.add_argument('--config', is_config_file=True, help='config file path')
     parser.add_argument("--scene_name", help="your name")
-    parser.add_argument("--wave_function_type", type=str, default="sinusoidal", help="waveform")
     parser.add_argument("--scenedir", type=str, default="./", help="scene directory")
     parser.add_argument("--outputdir", type=str, default="./", help="output directory")
     parser.add_argument("--exp_time", type=float, default=0.008, help="integration time in sec")
     parser.add_argument("--mod_freq", type=float, default = 24.0, help="modulation frequency in MHz")
-    parser.add_argument("--corr_depth", type=int, default=2, help="path correlation depth")
+    parser.add_argument("--max_depth", type=int, default=2, help='max path depth')
+    parser.add_argument("--spp", type=int, default=1024, help='samples per pixel')
+    parser.add_argument("--wave_function_type", type=str, default="sinusoidal", help="waveform")
 
     args = parser.parse_args()
     scene_name = args.scene_name
-    wave_function_type = args.wave_function_type
+    scene_dir = args.scenedir
+    outputdir = args.outputdir
     exposure_time = args.exp_time
     modulation_freq = args.mod_freq
-    correlation_depth = args.corr_depth
-    outputdir = args.outputdir
-
-    # w_o = pi / exposure_time
-    # w_of = (2.0*pi) / exposure_time
-    # f_o = 1.0/(2.0*exposure_time) * 1e-6 # in MHz because mod freq is in MHz
-    # f_of = 1.0 / (exposure_time) * 1e-6 # in MHz because mod freq is in MHz
-    
-    # get scene_config
-    scene_configs = get_animation_scene_configs()
-    if not scene_name in scene_configs:
-        print("scene name not found")
-        return
-    scene_config = scene_configs[scene_name]
-    scene_base_dir = os.path.join(args.scenedir, "scenes", scene_name)
-
-    hetero_offsets = [0.0, 0.25, 0.5, 0.75]  # phase offset [0,1] -> [0, 2pi]
-    hetero_offsets_hu = [0.75, 0.0, 0.25, 0.5]
-    hetero_freqs_hu = [0.5, 0.5, -0.5, -0.5] # pos, pos, neg, neg
+    max_depth = args.max_depth
+    wave_function_type = args.wave_function_type
+    spp = args.spp
+    scene_base_dir = os.path.join(scene_dir, "scenes", scene_name)
 
     # load the scene
     scene_filename = os.path.join(scene_base_dir, scene_name+".xml")
     print("scene_filename: ", scene_filename)
-    # scene_camera = os.path.join(scene_base_dir, scene_name+"_camera.xml")
-    # shutter_open = get_shutter_open(scene_camera)
+    scene_camera = os.path.join(scene_base_dir, scene_name+"_camera.xml")
+
     # change the shutter close time to match exposure time
-    # change_shutter_close(scene_camera, exposure_time)
+    change_shutter_close(scene_camera, exposure_time)
+
     scene = mi.load_file(scene_filename) # load the scene xml file
     
-    exit_if_file_exists = False
-
     # Render GT radiance
-    run_scene_radiance(
+    run_scene(
         scene, 
-        scene_name,
-        output_file_name="{}_radiance".format(scene_name),
+        'radiance',
+        max_depth=max_depth,
+        total_spp=spp,
+        output_filename="{}_radiance".format(scene_name),
         output_path=outputdir,
-        exit_if_file_exists=exit_if_file_exists
-    )
+        )
     print("Done rendering radiance")
     print("=================================")
 
     # Render GT radial velocity
-    run_scene_velocity(
+    run_scene(
         scene, 
-        scene_name,
-        output_file_name="{}_velocity".format(scene_name),
-        output_path=outputdir,
-        exit_if_file_exists=exit_if_file_exists,
+        'velocity',
         capture_time = exposure_time,
-        **scene_config
+        total_spp=spp,
+        output_filename="{}_velocity".format(scene_name),
+        output_path=outputdir,
     )
     print("Done rendering velocity")
     print("=================================")
 
-    # Render scene depth
-    run_scene_depth(
+    # Render GT depth
+    run_scene(
         scene, 
-        scene_name,
-        output_file_name="{}_depth".format(scene_name),
-        output_path=outputdir, 
-        exit_if_file_exists=exit_if_file_exists
-    )
+        'depth',
+        total_spp=spp,
+        output_filename="{}_depth".format(scene_name),
+        output_path=outputdir,
+        )
     print("Done rendering depth")
     print("=================================")    
 
-    common_configs = {
-        "time_sampling_method": "antithetic",
-        "scene_name": scene_name,
-        "wave_function_type": wave_function_type,
-        "low_frequency_component_only": True,
-        "scene": scene,
+    # define some common tof rendering configs
+    tof_configs = {
         "w_g": modulation_freq,
         "exposure_time": exposure_time,
-        "max_depth": scene_config.get("max_depth"),
-        "exit_if_file_exists": exit_if_file_exists,
-        "show_progress": False
+        "max_depth": max_depth,
+        "path_correlation_depth": 2,
+        "time_sampling_method": "antithetic",
+        "antithetic_shift": 0.5,
+        "total_spp": spp,
+        "wave_function_type": wave_function_type,
+        "low_frequency_component_only": True,
+        "use_stratified_sampling_for_each_interval": True
     }
+
+    # define heterodyne values to use during rendering
+    hetero_offsets = [0.0, 0.25, 0.5, 0.75]  # phase offset [0,1] -> [0, 2pi]
+    hetero_offsets_hu = [0.75, 0.0, 0.25, 0.5]
+    hetero_freqs_hu = [0.5, 0.5, -0.5, -0.5] # pos, pos, neg, neg
 
     print("Rendering ToF...")
     print(f"{'Modulation Frequency (MHz):':<30}{modulation_freq}")
@@ -123,37 +114,43 @@ def main():
     
     for i in trange(len(hetero_offsets)):
         phase = int(hetero_offsets[i]*360)
-        homodyne_output_file_name = "{}_homodyne_phase{}".format(scene_name, phase)
-        OF_heterodyne_output_file_name = "{}_OFheterodyne_phase{}".format(scene_name, phase)
-        heterodyne_output_file_name = "{}_heterodyne_phase{}".format(scene_name, phase)
+        homodyne_output_filename = "{}_homodyne_phase{}".format(scene_name, phase)
+        OFheterodyne_output_filename = "{}_OFheterodyne_phase{}".format(scene_name, phase)
+        heterodyne_output_filename = "{}_heterodyne_phase{}".format(scene_name, phase)
 
         # (1) Render homodyne (no variation is used for homodyne)
-        homodyne_image = run_scene_doppler_tof(
+        homodyne_image = run_scene(
+            scene, 
+            'dopplertofpath',
+            hetero_frequency=0,
             hetero_offset=hetero_offsets[i],
-            hetero_frequency=0.0,
-            output_path=outputdir,
-            expname=homodyne_output_file_name,
-            **common_configs
+            output_filename=homodyne_output_filename,
+            output_path=outputdir, 
+            **tof_configs
         )
 
         # (2) Render heterodyne heide et al's method, pure OF        
-        OFheterodyne_image = run_scene_doppler_tof(
-            hetero_frequency=1.0,  
+        OFheterodyne_image = run_scene(
+            scene, 
+            'dopplertofpath',
+            hetero_frequency=1.0,
             hetero_offset=hetero_offsets[i],
-            output_path=outputdir,
-            expname=OF_heterodyne_output_file_name,
-            **common_configs
+            output_filename=OFheterodyne_output_filename,
+            output_path=outputdir, 
+            **tof_configs
         )
 
         # (3) Render heterodyne hu et al's method, offset btw [0, 2pi/T]
-        heterodyne_image = run_scene_doppler_tof(
-            hetero_frequency = hetero_freqs_hu[i], 
+        heterodyne_image = run_scene(
+            scene, 
+            'dopplertofpath',
+            hetero_frequency=hetero_freqs_hu[i],
             hetero_offset=hetero_offsets_hu[i],
-            output_path=outputdir,
-            expname=heterodyne_output_file_name,
-            **common_configs
+            output_filename=heterodyne_output_filename,
+            output_path=outputdir, 
+            **tof_configs
         )
-    
+
     print("Experiments complete.")      
 
 if __name__ == "__main__":

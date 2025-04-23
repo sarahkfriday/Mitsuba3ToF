@@ -92,8 +92,8 @@ public:
 
     VelocityIntegrator(const Properties &props) : Base(props) { 
         m_shutter_open = props.get<ScalarFloat>("shutter_open", 0.0f);
-        m_shutter_close = props.get<ScalarFloat>("shutter_close", 0.0015f);
         m_time = props.get<ScalarFloat>("time", 0.0015f);
+        m_shutter_close = props.get<ScalarFloat>("shutter_close", m_time);
     }
 
     std::pair<Spectrum, Bool> sample(const Scene *scene,

@@ -2,69 +2,6 @@ import numpy as np
 import os
 import cv2
 import matplotlib.pyplot as plt
-import xml.etree.ElementTree as ET
-
-def get_shutter_open(filepath):
-    xml_file = ET.parse(filepath)
-    root = xml_file.getroot()
-    open_element=root.find(".//sensor/float[@name='shutter_open']") # get the correct element
-    shutter_open = open_element.get('value', str(0.0))
-    return float(shutter_open)
-
-'''
-    Change shutter_close
-    does not change shutter_close if new value matches previous
-
-    filepath - where to find the file
-    new_val - new value for shutter_close
-'''
-def change_shutter_close(filepath, new_val):
-    xml_file = ET.parse(filepath)
-    root = xml_file.getroot()
-    # get the correct element
-    element=root.find(".//sensor/float[@name='shutter_close']")
-    if element.get('value') != str(new_val):
-        # set the new value
-        element.set('value', str(new_val))
-        # write out to file
-        xml_file.write(filepath)
-
-'''
-    Change line offset for snapshot emulation
-    filepath - where to find the file
-    new_val - new value for line crop offset
-    axis - x or y
-'''
-def change_line_offset(filepath, new_val, axis):
-    xml_file = ET.parse(filepath)
-    root = xml_file.getroot()
-    if axis=='x':
-        crop_name = 'crop_offset_x'
-    else:
-        crop_name = 'crop_offset_y'
-    # get the correct element
-    element=root.find(".//sensor/film/integer[@name='{}']".format(crop_name))
-    # set the new value
-    element.set('value', str(new_val))
-    # write out to file
-    xml_file.write(filepath)
-
-'''
-    Change a parent element of xml scene file
-    filepath - where to find the file
-    parent_tag - string of parent tags id ex: ['sensor', 'emitter', 'bsdf']
-    parent_new_vals - list of new values for that element
-'''
-def change_parent_scene_element(filepath, parent_tags, parent_new_vals):
-    xml_file = ET.parse(filepath)
-    root = xml_file.getroot()
-    for i, p in enumerate(parent_tags):
-        # get the correct element
-        element=root.find(".//{}".format(p))
-        # set the new value
-        element.set('type', str(parent_new_vals[i]))
-    # write out to file
-    xml_file.write(filepath)
 
 def ToneMap(c, limit):
     luminance = 0.3*c[:,:,0] + 0.6*c[:,:,1] + 0.1*c[:,:,2]
